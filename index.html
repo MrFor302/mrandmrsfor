@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анна &amp; Дмитрий — Приглашение на свадьбу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf8f5;
+    --ink:#2c2a28;
+    --muted:#8a8378;
+    --line:#d9d2c6;
+    --accent:#b08d57;
+    --accent-soft:#e8ddc9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Montserrat',sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:500;letter-spacing:.02em;}
+  .container{max-width:860px;margin:0 auto;padding:0 24px;}
+  section{padding:110px 0;}
+  .center{text-align:center;}
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.28em;
+    font-size:12px;
+    color:var(--accent);
+    margin-bottom:18px;
+  }
+  .divider{
+    width:56px;height:1px;background:var(--accent);
+    margin:28px auto;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 24px;
+    position:relative;
+  }
+  .hero-frame{
+    border:1px solid var(--line);
+    padding:64px 48px;
+    max-width:640px;
+  }
+  .hero .eyebrow{margin-bottom:22px;}
+  .hero-names{
+    font-size:clamp(46px,8vw,84px);
+    line-height:1.08;
+    font-style:italic;
+  }
+  .hero-amp{color:var(--accent);display:block;font-size:.5em;margin:10px 0;}
+  .hero-date{
+    margin-top:26px;
+    font-family:'Montserrat',sans-serif;
+    letter-spacing:.22em;
+    font-size:13px;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+  .scroll-hint{
+    position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+  }
+
+  /* COUNTDOWN */
+  .countdown{
+    display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+    margin-top:20px;
+  }
+  .countdown div{
+    min-width:88px;
+    padding:20px 10px;
+    border:1px solid var(--line);
+  }
+  .countdown .num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:36px;color:var(--accent);
+  }
+  .countdown .label{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px;
+  }
+
+  /* WELCOME */
+  .welcome p{
+    max-width:560px;margin:0 auto;
+    font-size:17px;font-weight:300;color:#4a453e;
+  }
+
+  /* DETAILS */
+  .details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:50px;
+  }
+  .detail-card{
+    text-align:center;
+    padding:36px 24px;
+    border:1px solid var(--line);
+  }
+  .detail-card .icon{font-size:26px;color:var(--accent);margin-bottom:14px;}
+  .detail-card h3{font-size:24px;margin-bottom:8px;}
+  .detail-card p{color:var(--muted);font-size:14px;}
+  .map-link{
+    display:inline-block;margin-top:10px;font-size:12px;letter-spacing:.1em;
+    color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);text-transform:uppercase;
+  }
+
+  /* TIMELINE */
+  .timeline{margin-top:50px;position:relative;}
+  .timeline::before{
+    content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line);
+    transform:translateX(-50%);
+  }
+  .t-item{
+    display:grid;grid-template-columns:1fr 40px 1fr;
+    align-items:center;
+    margin-bottom:34px;
+  }
+  .t-time{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--accent);text-align:right;padding-right:24px;}
+  .t-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);margin:0 auto;position:relative;z-index:1;}
+  .t-text{padding-left:24px;font-size:14px;color:#4a453e;text-transform:uppercase;letter-spacing:.08em;}
+
+  /* DRESS CODE */
+  .palette{display:flex;justify-content:center;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .swatch{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);}
+  .dress-note{max-width:520px;margin:24px auto 0;color:var(--muted);font-size:14px;}
+
+  /* STORY */
+  .story-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px;
+  }
+  .story-photo{
+    aspect-ratio:3/4;
+    background:linear-gradient(135deg,var(--accent-soft),#f2ede2);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;
+    border:1px solid var(--line);
+  }
+  .story-text{max-width:600px;margin:44px auto 0;color:#4a453e;font-size:15px;text-align:center;}
+
+  /* RSVP */
+  .rsvp-form{max-width:480px;margin:50px auto 0;text-align:left;}
+  .field{margin-bottom:22px;}
+  .field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .field input,.field select,.field textarea{
+    width:100%;border:none;border-bottom:1px solid var(--line);
+    background:transparent;padding:8px 2px;font-family:'Montserrat',sans-serif;font-size:15px;color:var(--ink);
+    outline:none;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+  .radio-row{display:flex;gap:26px;margin-top:4px;}
+  .radio-row label{display:flex;align-items:center;gap:8px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
+  .submit-btn{
+    width:100%;padding:16px;margin-top:10px;
+    background:var(--ink);color:#fff;border:none;
+    letter-spacing:.18em;text-transform:uppercase;font-size:12px;cursor:pointer;
+    transition:background .25s ease;
+  }
+  .submit-btn:hover{background:var(--accent);}
+  .rsvp-thanks{
+    display:none;text-align:center;margin-top:24px;color:var(--accent);
+    font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;
+  }
+
+  /* GIFTS */
+  .gift-text{max-width:520px;margin:24px auto 0;color:var(--muted);font-size:14px;}
+
+  footer{
+    padding:60px 24px 40px;text-align:center;color:var(--muted);font-size:12px;letter-spacing:.1em;
+    border-top:1px solid var(--line);
+  }
+  footer .amp{color:var(--accent);}
+
+  @media(max-width:640px){
+    section{padding:80px 0;}
+    .hero-frame{padding:44px 22px;}
+    .details-grid{grid-template-columns:1fr;}
+    .story-grid{grid-template-columns:1fr 1fr;}
+    .t-item{grid-template-columns:1fr 30px 1fr;}
+    .t-time{padding-right:14px;font-size:20px;}
+    .t-text{padding-left:14px;font-size:12px;}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-frame">
+    <div class="eyebrow">Приглашаем на нашу свадьбу</div>
+    <h1 class="hero-names">Анна<span class="hero-amp">&amp;</span>Дмитрий</h1>
+    <div class="hero-date">12 сентября 2026 · Подмосковье</div>
+  </div>
+  <div class="scroll-hint">↓ листайте вниз</div>
+</section>
+
+<section class="welcome center container">
+  <div class="eyebrow">Дорогие друзья</div>
+  <h2 style="font-size:32px;margin-bottom:22px;">Мы женимся!</h2>
+  <p>Для нас будет большой честью разделить этот особенный день вместе с вами. Ниже — вся информация о том, где, когда и как всё пройдёт. Будем рады видеть именно вас в числе гостей.</p>
+
+  <div class="divider"></div>
+  <div class="countdown" id="countdown">
+    <div><div class="num" id="cd-days">00</div><div class="label">дней</div></div>
+    <div><div class="num" id="cd-hours">00</div><div class="label">часов</div></div>
+    <div><div class="num" id="cd-min">00</div><div class="label">минут</div></div>
+    <div><div class="num" id="cd-sec">00</div><div class="label">секунд</div></div>
+  </div>
+</section>
+
+<section class="details container">
+  <div class="center">
+    <div class="eyebrow">Когда и где</div>
+    <h2 style="font-size:32px;">Детали торжества</h2>
+  </div>
+  <div class="details-grid">
+    <div class="detail-card">
+      <div class="icon">✦</div>
+      <h3>Церемония</h3>
+      <p>12 сентября 2026, 16:00<br>Усадьба «Тихий берег»<br>Московская область</p>
+      <a class="map-link" href="#">Смотреть на карте</a>
+    </div>
+    <div class="detail-card">
+      <div class="icon">✦</div>
+      <h3>Банкет</h3>
+      <p>12 сентября 2026, 18:00<br>Ресторан «Дубрава»<br>там же, на территории усадьбы</p>
+      <a class="map-link" href="#">Смотреть на карте</a>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-section container">
+  <div class="center">
+    <div class="eyebrow">Расписание</div>
+    <h2 style="font-size:32px;">Как пройдёт день</h2>
+  </div>
+  <div class="timeline">
+    <div class="t-item"><div class="t-time">15:30</div><div class="t-dot"></div><div class="t-text">Сбор гостей</div></div>
+    <div class="t-item"><div class="t-time">16:00</div><div class="t-dot"></div><div class="t-text">Церемония</div></div>
+    <div class="t-item"><div class="t-time">17:00</div><div class="t-dot"></div><div class="t-text">Фотосессия и фуршет</div></div>
+    <div class="t-item"><div class="t-time">18:00</div><div class="t-dot"></div><div class="t-text">Банкет</div></div>
+    <div class="t-item"><div class="t-time">21:00</div><div class="t-dot"></div><div class="t-text">Танцы и вечерняя программа</div></div>
+    <div class="t-item"><div class="t-time">00:00</div><div class="t-dot"></div><div class="t-text">Завершение вечера</div></div>
+  </div>
+</section>
+
+<section class="dress-code container center">
+  <div class="eyebrow">Дресс-код</div>
+  <h2 style="font-size:32px;">Тёплые и природные тона</h2>
+  <div class="palette">
+    <div class="swatch" style="background:#e8ddc9;"></div>
+    <div class="swatch" style="background:#b08d57;"></div>
+    <div class="swatch" style="background:#7c6a52;"></div>
+    <div class="swatch" style="background:#3f3a33;"></div>
+    <div class="swatch" style="background:#f2ede2;"></div>
+  </div>
+  <p class="dress-note">Просим избегать белого и слишком ярких оттенков — этот день принадлежит невесте. Будем благодарны, если вы поддержите нашу цветовую палитру.</p>
+</section>
+
+<section class="story container">
+  <div class="center">
+    <div class="eyebrow">Наша история</div>
+    <h2 style="font-size:32px;">Немного о нас</h2>
+  </div>
+  <div class="story-grid">
+    <div class="story-photo">Фото 1</div>
+    <div class="story-photo">Фото 2</div>
+    <div class="story-photo">Фото 3</div>
+  </div>
+  <p class="story-text">Мы познакомились пять лет назад и с тех пор прошли вместе через множество приключений. Теперь настало время сделать следующий шаг — и мы хотим, чтобы вы были рядом.</p>
+</section>
+
+<section class="rsvp container">
+  <div class="center">
+    <div class="eyebrow">Подтверждение присутствия</div>
+    <h2 style="font-size:32px;">RSVP до 1 августа 2026</h2>
+  </div>
+  <form class="rsvp-form" id="rsvpForm">
+    <div class="field">
+      <label>Ваше имя и фамилия</label>
+      <input type="text" required placeholder="Иван Иванов">
+    </div>
+    <div class="field">
+      <label>Вы будете с нами?</label>
+      <div class="radio-row">
+        <label><input type="radio" name="attend" value="yes" checked> Да, приду</label>
+        <label><input type="radio" name="attend" value="no"> К сожалению, нет</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Количество гостей (включая вас)</label>
+      <input type="number" min="1" max="4" value="1">
+    </div>
+    <div class="field">
+      <label>Пожелания по меню / аллергии</label>
+      <textarea rows="3" placeholder="Например: вегетарианское меню"></textarea>
+    </div>
+    <button type="submit" class="submit-btn">Отправить ответ</button>
+  </form>
+  <div class="rsvp-thanks" id="rsvpThanks">Спасибо! Ваш ответ получен ♡</div>
+</section>
+
+<section class="gifts container center">
+  <div class="eyebrow">Подарки</div>
+  <h2 style="font-size:32px;">Пожалуйста, без подарков</h2>
+  <p class="gift-text">Самый ценный подарок для нас — ваше присутствие. Но если вы всё же хотите нас порадовать, будем благодарны вкладу в наше свадебное путешествие.</p>
+</section>
+
+<footer>
+  Анна <span class="amp">&amp;</span> Дмитрий · 12 сентября 2026<br>
+  С любовью ждём встречи с вами
+</footer>
+
+<script>
+  // Countdown
+  const weddingDate = new Date('2026-09-12T16:00:00');
+  function updateCountdown(){
+    const now = new Date();
+    let diff = weddingDate - now;
+    if(diff < 0) diff = 0;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-min').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-sec').textContent = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // RSVP form (demo only, no backend)
+  document.getElementById('rsvpForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    this.style.display = 'none';
+    document.getElementById('rsvpThanks').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
