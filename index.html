@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Анна &amp; Дмитрий — Приглашение на свадьбу</title>
+<title>Натали &amp; Андрей — Приглашение на свадьбу</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -155,6 +155,13 @@
   .story-text{max-width:600px;margin:44px auto 0;color:#4a453e;font-size:15px;text-align:center;}
 
   /* RSVP */
+  .rsvp-embed{
+    max-width:640px;margin:50px auto 0;
+    border:1px solid var(--line);
+    background:#fff;
+    overflow:hidden;
+  }
+  .rsvp-embed iframe{display:block;}
   .rsvp-form{max-width:480px;margin:50px auto 0;text-align:left;}
   .field{margin-bottom:22px;}
   .field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
@@ -203,8 +210,8 @@
 <section class="hero">
   <div class="hero-frame">
     <div class="eyebrow">Приглашаем на нашу свадьбу</div>
-    <h1 class="hero-names">Анна<span class="hero-amp">&amp;</span>Дмитрий</h1>
-    <div class="hero-date">12 сентября 2026 · Подмосковье</div>
+    <h1 class="hero-names">Натали<span class="hero-amp">&amp;</span>Андрей</h1>
+    <div class="hero-date">26 августа 2026 · Подмосковье</div>
   </div>
   <div class="scroll-hint">↓ листайте вниз</div>
 </section>
@@ -232,13 +239,13 @@
     <div class="detail-card">
       <div class="icon">✦</div>
       <h3>Церемония</h3>
-      <p>12 сентября 2026, 16:00<br>Усадьба «Тихий берег»<br>Московская область</p>
+      <p>26 августа 2026, 16:00<br>Усадьба «Тихий берег»<br>Московская область</p>
       <a class="map-link" href="#">Смотреть на карте</a>
     </div>
     <div class="detail-card">
       <div class="icon">✦</div>
       <h3>Банкет</h3>
-      <p>12 сентября 2026, 18:00<br>Ресторан «Дубрава»<br>там же, на территории усадьбы</p>
+      <p>26 августа 2026, 18:00<br>Ресторан «Дубрава»<br>там же, на территории усадьбы</p>
       <a class="map-link" href="#">Смотреть на карте</a>
     </div>
   </div>
@@ -288,31 +295,11 @@
 <section class="rsvp container">
   <div class="center">
     <div class="eyebrow">Подтверждение присутствия</div>
-    <h2 style="font-size:32px;">RSVP до 1 августа 2026</h2>
+    <h2 style="font-size:32px;">RSVP до 15 августа 2026</h2>
   </div>
-  <form class="rsvp-form" id="rsvpForm">
-    <div class="field">
-      <label>Ваше имя и фамилия</label>
-      <input type="text" required placeholder="Иван Иванов">
-    </div>
-    <div class="field">
-      <label>Вы будете с нами?</label>
-      <div class="radio-row">
-        <label><input type="radio" name="attend" value="yes" checked> Да, приду</label>
-        <label><input type="radio" name="attend" value="no"> К сожалению, нет</label>
-      </div>
-    </div>
-    <div class="field">
-      <label>Количество гостей (включая вас)</label>
-      <input type="number" min="1" max="4" value="1">
-    </div>
-    <div class="field">
-      <label>Пожелания по меню / аллергии</label>
-      <textarea rows="3" placeholder="Например: вегетарианское меню"></textarea>
-    </div>
-    <button type="submit" class="submit-btn">Отправить ответ</button>
-  </form>
-  <div class="rsvp-thanks" id="rsvpThanks">Спасибо! Ваш ответ получен ♡</div>
+  <div class="rsvp-embed">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfPLD0Gp2BUnkfBN5ohTWdZpxkzR4e7Pcynu2uItnDD3YXQog/viewform?embedded=true" width="100%" height="1100" frameborder="0" marginheight="0" marginwidth="0">Загрузка формы…</iframe>
+  </div>
 </section>
 
 <section class="gifts container center">
@@ -322,13 +309,13 @@
 </section>
 
 <footer>
-  Анна <span class="amp">&amp;</span> Дмитрий · 12 сентября 2026<br>
+  Натали <span class="amp">&amp;</span> Андрей · 26 августа 2026<br>
   С любовью ждём встречи с вами
 </footer>
 
 <script>
   // Countdown
-  const weddingDate = new Date('2026-09-12T16:00:00');
+  const weddingDate = new Date('2026-08-26T16:00:00');
   function updateCountdown(){
     const now = new Date();
     let diff = weddingDate - now;
@@ -344,13 +331,6 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
-
-  // RSVP form (demo only, no backend)
-  document.getElementById('rsvpForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    this.style.display = 'none';
-    document.getElementById('rsvpThanks').style.display = 'block';
-  });
 </script>
 
 </body>
