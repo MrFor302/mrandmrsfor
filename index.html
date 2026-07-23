@@ -177,8 +177,12 @@
     outline:none;
   }
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
-  .radio-row{display:flex;gap:26px;margin-top:4px;}
+  .radio-row{display:flex;gap:26px;margin-top:4px;flex-wrap:wrap;}
   .radio-row label{display:flex;align-items:center;gap:8px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
+  .check-row{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  .check-row label{display:flex;align-items:center;gap:10px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);}
+  .check-row input[type="checkbox"]{width:auto;accent-color:var(--accent);}
+  .field-note{font-size:12px;color:var(--muted);margin-top:10px;}
   .submit-btn{
     width:100%;padding:16px;margin-top:10px;
     background:var(--ink);color:#fff;border:none;
@@ -291,9 +295,41 @@
     <div class="eyebrow">Подтверждение присутствия</div>
     <h2 style="font-size:32px;">Пожалуйста, заполните форму до 5 августа</h2>
   </div>
-  <div class="rsvp-embed">
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfPLD0Gp2BUnkfBN5ohTWdZpxkzR4e7Pcynu2uItnDD3YXQog/viewform?embedded=true" width="100%" height="1100" frameborder="0" marginheight="0" marginwidth="0">Загрузка формы…</iframe>
-  </div>
+  <form class="rsvp-form" id="rsvpForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfPLD0Gp2BUnkfBN5ohTWdZpxkzR4e7Pcynu2uItnDD3YXQog/formResponse" method="POST" target="hidden_iframe">
+    <div class="field">
+      <label>Ваше имя и фамилия</label>
+      <input type="text" name="entry.1882921191" required placeholder="Иван Иванов">
+    </div>
+    <div class="field">
+      <label>Вы будете с нами?</label>
+      <div class="radio-row">
+        <label><input type="radio" name="entry.462011520" value="Да, приду" checked required> Да, приду</label>
+        <label><input type="radio" name="entry.462011520" value="Нет, к сожалению"> К сожалению, нет</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Количество гостей (включая вас)</label>
+      <input type="number" name="entry.122403845" min="1" max="10" value="1" required>
+    </div>
+    <div class="field">
+      <label>Пожелания по меню / аллергии</label>
+      <textarea name="entry.1862161775" rows="3" placeholder="Например: вегетарианское меню"></textarea>
+    </div>
+    <div class="field">
+      <label>Пожелания по алкоголю</label>
+      <div class="check-row">
+        <label><input type="checkbox" name="entry.1381933408" value="Красное вино"> Красное вино</label>
+        <label><input type="checkbox" name="entry.1381933408" value="Белое вино"> Белое вино</label>
+        <label><input type="checkbox" name="entry.1381933408" value="Шампанское"> Шампанское</label>
+        <label><input type="checkbox" name="entry.1381933408" value="Крепкий алкоголь"> Крепкий алкоголь</label>
+        <label><input type="checkbox" name="entry.1381933408" value="Безалкогольно"> Безалкогольно</label>
+      </div>
+      <input type="text" id="alcoholOther" style="margin-top:12px;" placeholder="Свой вариант (необязательно)">
+    </div>
+    <button type="submit" class="submit-btn">Отправить ответ</button>
+  </form>
+  <div class="rsvp-thanks" id="rsvpThanks">Спасибо! Ваш ответ получен ♡</div>
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </section>
 
 <section class="gifts container center">
@@ -324,6 +360,42 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
+
+  // RSVP form -> submits directly to the Google Form's backend (same Google Sheet),
+  // styled to match the site instead of showing the default Google Forms UI.
+  const rsvpForm = document.getElementById('rsvpForm');
+  const hiddenFrame = document.getElementById('hidden_iframe');
+  let rsvpSubmitting = false;
+
+  rsvpForm.addEventListener('submit', function(){
+    const otherVal = document.getElementById('alcoholOther').value.trim();
+    // clear any previously injected hidden fields (in case of resubmission)
+    rsvpForm.querySelectorAll('.alcohol-other-hidden').forEach(el => el.remove());
+    if(otherVal){
+      const marker = document.createElement('input');
+      marker.type = 'hidden';
+      marker.name = 'entry.1381933408';
+      marker.value = '__other_option__';
+      marker.className = 'alcohol-other-hidden';
+      const response = document.createElement('input');
+      response.type = 'hidden';
+      response.name = 'entry.1381933408.other_option_response';
+      response.value = otherVal;
+      response.className = 'alcohol-other-hidden';
+      rsvpForm.appendChild(marker);
+      rsvpForm.appendChild(response);
+    }
+    rsvpSubmitting = true;
+    // form submits normally into the hidden iframe (no page navigation)
+  });
+
+  hiddenFrame.addEventListener('load', function(){
+    if(rsvpSubmitting){
+      rsvpForm.style.display = 'none';
+      document.getElementById('rsvpThanks').style.display = 'block';
+      rsvpSubmitting = false;
+    }
+  });
 </script>
 
 </body>
