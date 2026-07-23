@@ -220,9 +220,46 @@
     .t-time{padding-right:14px;font-size:20px;}
     .t-text{padding-left:14px;font-size:12px;}
   }
+
+  /* MUSIC TOGGLE */
+  .music-toggle{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    width:50px;height:50px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(250,248,245,0.9);
+    backdrop-filter:blur(6px);
+    color:var(--muted);
+    font-size:19px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    z-index:999;
+    transition:color .3s ease, border-color .3s ease, box-shadow .3s ease;
+    box-shadow:0 2px 12px rgba(44,42,40,0.08);
+  }
+  .music-toggle:hover{ box-shadow:0 2px 16px rgba(44,42,40,0.14); }
+  .music-toggle.playing{
+    color:var(--accent);
+    border-color:var(--accent);
+    animation:music-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes music-pulse{
+    0%,100%{ box-shadow:0 2px 12px rgba(176,141,87,0.15); }
+    50%{ box-shadow:0 2px 18px rgba(176,141,87,0.4); }
+  }
+  @media (max-width:640px){
+    .music-toggle{ width:44px;height:44px;bottom:16px;right:16px;font-size:17px; }
+  }
 </style>
 </head>
 <body>
+
+<audio id="bgMusic" loop preload="none">
+  <source src="audio/perfect.mp3" type="audio/mpeg">
+</audio>
+<button class="music-toggle" id="musicToggle" aria-label="Включить или выключить музыку" type="button">♪</button>
 
 <section class="hero">
   <div class="hero-frame">
@@ -415,6 +452,31 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
+
+  // Background music: browsers block autoplay with sound, so playback starts
+  // on the visitor's first click anywhere on the page. The floating button
+  // lets them pause/resume at any time afterwards.
+  const bgMusic = document.getElementById('bgMusic');
+  const musicToggle = document.getElementById('musicToggle');
+  bgMusic.volume = 0.5;
+
+  document.addEventListener('click', function startMusicOnFirstClick(){
+    if(bgMusic.paused){
+      bgMusic.play().then(() => {
+        musicToggle.classList.add('playing');
+      }).catch(() => {});
+    }
+  }, { once: true });
+
+  musicToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(bgMusic.paused){
+      bgMusic.play().then(() => musicToggle.classList.add('playing')).catch(() => {});
+    } else {
+      bgMusic.pause();
+      musicToggle.classList.remove('playing');
+    }
+  });
 
   // RSVP form -> submits directly to the Google Form's backend (same Google Sheet),
   // styled to match the site instead of showing the default Google Forms UI.
