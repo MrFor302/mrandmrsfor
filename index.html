@@ -177,11 +177,19 @@
   .story-photo img{
     width:100%;height:100%;object-fit:cover;display:block;
   }
+  .story-photo.empty{
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg, var(--accent-soft), var(--bg));
+  }
+  .story-photo.empty span{
+    font-size:26px;color:var(--accent);opacity:.55;
+  }
   .story-year{
     margin-top:12px;
     font-family:'Cormorant Garamond',serif;font-style:italic;
     font-size:19px;color:var(--accent);letter-spacing:.04em;
   }
+  .story-year.story-more{font-size:15px;}
   .story-text{max-width:600px;margin:44px auto 0;color:#4a453e;font-size:15px;text-align:center;}
 
   /* RSVP */
@@ -316,7 +324,7 @@
       <div class="icon">✦</div>
       <h3>Банкет</h3>
       <p>26 августа 2026, 16:00<br>Вилла «Серебряный родник»<br>Свердловская область, 2 км от Арамиля,<br>коттеджный посёлок Берёзки, 38/1</p>
-      <p style="margin-top:14px;">Для тех, кто захочет остаться подольше, — есть возможность разместиться с ночёвкой на территории виллы.</p>
+      <p style="margin-top:14px;">Будем рады, если вы захотите остаться подольше, — есть возможность разместиться на территории виллы.</p>
       <a class="map-link" href="https://yandex.ru/maps/?text=Вилла+Серебряный+родник+Свердловская+область+коттеджный+посёлок+Берёзки+38%2F1" target="_blank" rel="noopener">Смотреть на карте</a>
     </div>
   </div>
@@ -331,8 +339,7 @@
     <div class="t-item"><div class="t-time">16:00</div><div class="t-dot"></div><div class="t-text">Сбор гостей</div></div>
     <div class="t-item"><div class="t-time">16:30</div><div class="t-dot"></div><div class="t-text">Церемония</div></div>
     <div class="t-item"><div class="t-time">17:00</div><div class="t-dot"></div><div class="t-text">Банкет</div></div>
-    <div class="t-item"><div class="t-time">22:00</div><div class="t-dot"></div><div class="t-text">Танцы и вечерняя программа</div></div>
-    <div class="t-item"><div class="t-time">01:00</div><div class="t-dot"></div><div class="t-text">Завершение вечера</div></div>
+    <div class="t-item"><div class="t-time">22:00</div><div class="t-dot"></div><div class="t-text">Праздничный торт и танцы</div></div>
   </div>
 </section>
 </div>
@@ -395,6 +402,10 @@
       <div class="story-photo"><img src="images/story-2026.jpg" alt="Натали и Андрей, 2026"></div>
       <div class="story-year">2026</div>
     </div>
+    <div class="story-item">
+      <div class="story-photo empty"><span>✦</span></div>
+      <div class="story-year story-more">продолжение следует...</div>
+    </div>
   </div>
   <p class="story-text">Мы познакомились 12 лет назад и с тех пор прошли вместе через множество приключений. Теперь настало время сделать следующий шаг — и мы хотим, чтобы вы были рядом.</p>
 </section>
@@ -456,7 +467,7 @@
 
 <section class="gifts container center">
   <div class="eyebrow">Подарки</div>
-  <p class="gift-text">Самый ценный подарок для нас — ваше присутствие. Но если вы всё же хотите нас порадовать, будем благодарны вкладу в наше свадебное путешествие.</p>
+  <p class="gift-text">Самый ценный подарок для нас — ваше присутствие. Но если вы всё же хотите нас порадовать, будем благодарны вкладу в реализацию нашей мечты.</p>
 </section>
 
 <footer>
