@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" style="overflow:hidden;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +84,21 @@
   .scroll-hint{
     position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
     font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+  }
+  .scroll-btn{
+    position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    background:none;border:none;padding:10px 16px;margin:0;
+    font-family:'Montserrat',sans-serif;font-weight:300;
+    font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+    cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    transition:color .25s ease;
+  }
+  .scroll-btn:hover,.scroll-btn:focus-visible{color:var(--accent);}
+  .scroll-btn .arrow{font-size:17px;line-height:1;animation:scroll-bounce 1.8s ease-in-out infinite;}
+  @keyframes scroll-bounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(6px);}
   }
 
   /* RINGS BACKGROUND (behind "Мы женимся" + "Детали торжества") */
@@ -284,7 +299,7 @@
   }
 </style>
 </head>
-<body>
+<body style="overflow:hidden;">
 
 <audio id="bgMusic" loop preload="none">
   <source src="audio/perfect.mp3" type="audio/mpeg">
@@ -297,7 +312,10 @@
     <h1 class="hero-names">Натали<span class="hero-amp">&amp;</span>Андрей</h1>
     <div class="hero-date">26 августа 2026 · Екатеринбург</div>
   </div>
-  <div class="scroll-hint">↓ листайте вниз</div>
+  <button type="button" class="scroll-btn" id="scrollBtn" aria-label="Пролистать дальше">
+    <span class="arrow">↓</span>
+    Листайте вниз
+  </button>
 </section>
 
 <div class="rings-bg">
@@ -477,6 +495,16 @@
 </footer>
 
 <script>
+  // Scroll lock: page starts locked on the hero section. Scrolling only
+  // becomes possible after the visitor clicks the scroll button, which then
+  // smoothly glides the page down to the next section.
+  const scrollBtn = document.getElementById('scrollBtn');
+  scrollBtn.addEventListener('click', function(){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.querySelector('.welcome').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
   // Countdown
   const weddingDate = new Date('2026-08-26T16:00:00');
   function updateCountdown(){
