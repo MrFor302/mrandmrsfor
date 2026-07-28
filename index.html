@@ -82,6 +82,13 @@
     font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
   }
 
+  /* RINGS BACKGROUND (behind "Мы женимся" + "Детали торжества") */
+  .rings-bg{
+    background:
+      linear-gradient(rgba(250,248,245,.55), rgba(250,248,245,.7)),
+      url('images/rings-bg.jpg') center/cover no-repeat;
+  }
+
   /* COUNTDOWN */
   .countdown{
     display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
@@ -91,6 +98,8 @@
     min-width:88px;
     padding:20px 10px;
     border:1px solid var(--line);
+    background:rgba(250,248,245,.85);
+    backdrop-filter:blur(2px);
   }
   .countdown .num{
     font-family:'Cormorant Garamond',serif;
@@ -118,6 +127,8 @@
     text-align:center;
     padding:36px 24px;
     border:1px solid var(--line);
+    background:rgba(250,248,245,.85);
+    backdrop-filter:blur(2px);
   }
   .detail-card .icon{font-size:26px;color:var(--accent);margin-bottom:14px;}
   .detail-card h3{font-size:24px;margin-bottom:8px;}
@@ -271,6 +282,7 @@
   <div class="scroll-hint">↓ листайте вниз</div>
 </section>
 
+<div class="rings-bg">
 <section class="welcome center container">
   <div class="eyebrow">Дорогие друзья</div>
   <h2 style="font-size:32px;margin-bottom:22px;">Мы женимся! <span style="color:var(--bg);font-size:13px;font-family:'Montserrat',sans-serif;font-weight:300;">Наконец-то</span></h2>
@@ -298,6 +310,7 @@
     </div>
   </div>
 </section>
+</div>
 
 <section class="timeline-section container">
   <div class="center">
