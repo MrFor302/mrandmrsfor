@@ -88,16 +88,16 @@
   .scroll-btn{
     position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
     background:none;border:none;padding:10px 16px;margin:0;
-    font-family:'Montserrat',sans-serif;font-weight:600;
-    font-size:12px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;
-    cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:7px;
+    font-family:'Montserrat',sans-serif;font-weight:700;
+    font-size:24px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;
+    cursor:pointer;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:9px;
     transition:color .25s ease;
   }
   .scroll-btn:hover,.scroll-btn:focus-visible{color:var(--ink);}
   .scroll-btn .label{animation:scroll-pulse 1.8s ease-in-out infinite;}
   .scroll-btn .arrow{
-    font-size:24px;font-weight:700;line-height:1;color:var(--accent);
+    font-size:34px;font-weight:700;line-height:1;color:var(--accent);
     animation:scroll-bounce 1.8s ease-in-out infinite;
   }
   @keyframes scroll-bounce{
@@ -272,6 +272,8 @@
     .t-text{padding-left:14px;font-size:12px;}
     .radio-row{flex-direction:column;gap:14px;}
     .radio-row label{white-space:normal;flex:1 1 auto;width:100%;align-items:flex-start;}
+    .scroll-btn{font-size:18px;letter-spacing:.08em;max-width:88vw;}
+    .scroll-btn .arrow{font-size:28px;}
   }
 
   /* MUSIC TOGGLE */
