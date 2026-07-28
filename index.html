@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" style="overflow:hidden;">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +39,11 @@
     font-size:12px;
     color:var(--accent);
     margin-bottom:18px;
+  }
+  .pulse-title{animation:title-pulse 2.4s ease-in-out infinite;}
+  @keyframes title-pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:.5;}
   }
   .divider{
     width:56px;height:1px;background:var(--accent);
@@ -88,16 +93,16 @@
   .scroll-btn{
     position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
     background:none;border:none;padding:10px 16px;margin:0;
-    font-family:'Montserrat',sans-serif;font-weight:700;
-    font-size:24px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;
+    font-family:'Montserrat',sans-serif;font-weight:600;
+    font-size:12px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;
     cursor:pointer;text-align:center;
-    display:flex;flex-direction:column;align-items:center;gap:9px;
+    display:flex;flex-direction:column;align-items:center;gap:7px;
     transition:color .25s ease;
   }
   .scroll-btn:hover,.scroll-btn:focus-visible{color:var(--ink);}
   .scroll-btn .label{animation:scroll-pulse 1.8s ease-in-out infinite;}
   .scroll-btn .arrow{
-    font-size:34px;font-weight:700;line-height:1;color:var(--accent);
+    font-size:24px;font-weight:700;line-height:1;color:var(--accent);
     animation:scroll-bounce 1.8s ease-in-out infinite;
   }
   @keyframes scroll-bounce{
@@ -236,6 +241,7 @@
   .easter-egg::selection{color:var(--ink);background:rgba(176,141,87,.4);}
   .radio-row{display:flex;gap:16px 26px;margin-top:4px;flex-wrap:wrap;}
   .radio-row label{display:flex;align-items:center;gap:8px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);flex:0 0 auto;white-space:nowrap;}
+  .radio-row input[type="radio"]{width:auto;flex:0 0 auto;border:none;background:none;padding:0;margin:0;accent-color:var(--accent);}
   .check-row{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
   .check-row label{display:flex;align-items:center;gap:10px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);}
   .check-row input[type="checkbox"]{width:auto;accent-color:var(--accent);}
@@ -273,8 +279,6 @@
     .t-text{padding-left:14px;font-size:12px;}
     .radio-row{flex-direction:column;gap:14px;}
     .radio-row label{white-space:normal;flex:1 1 auto;width:100%;align-items:flex-start;}
-    .scroll-btn{font-size:18px;letter-spacing:.08em;max-width:88vw;}
-    .scroll-btn .arrow{font-size:28px;}
     .gifts{padding-top:70px;}
   }
 
@@ -311,7 +315,7 @@
   }
 </style>
 </head>
-<body style="overflow:hidden;">
+<body>
 
 <audio id="bgMusic" loop preload="none">
   <source src="audio/perfect.mp3" type="audio/mpeg">
@@ -332,7 +336,7 @@
 
 <div class="rings-bg">
 <section class="welcome center container">
-  <div class="eyebrow">Дорогие друзья</div>
+  <div class="eyebrow pulse-title">Дорогие друзья</div>
   <h2 style="font-size:32px;margin-bottom:22px;">Мы женимся! <span class="easter-egg" style="font-size:13px;font-family:'Montserrat',sans-serif;font-weight:300;">Наконец-то</span></h2>
   <p>Для нас будет большой честью разделить этот особенный день вместе с вами. Ниже — вся информация о том, где, когда и как всё пройдёт. Будем рады видеть именно вас в числе гостей.</p>
 
@@ -347,7 +351,7 @@
 
 <section class="details container">
   <div class="center">
-    <div class="eyebrow">Когда и где</div>
+    <div class="eyebrow pulse-title">Когда и где</div>
     <h2 style="font-size:32px;">Детали торжества</h2>
   </div>
   <div class="details-grid">
@@ -363,7 +367,7 @@
 
 <section class="timeline-section container">
   <div class="center">
-    <div class="eyebrow">Расписание</div>
+    <div class="eyebrow pulse-title">Расписание</div>
     <h2 style="font-size:32px;">Как пройдёт день</h2>
   </div>
   <div class="timeline">
@@ -377,7 +381,7 @@
 
 <section class="story container">
   <div class="center">
-    <div class="eyebrow">Наша история</div>
+    <div class="eyebrow pulse-title">Наша история</div>
     <h2 style="font-size:32px;">Немного о нас</h2>
   </div>
   <div class="story-grid">
@@ -442,14 +446,14 @@
 </section>
 
 <section class="dress-code center container">
-  <div class="eyebrow">Что надеть</div>
+  <div class="eyebrow pulse-title">Что надеть</div>
   <h2 style="font-size:32px;">Дресс-код</h2>
   <p class="dress-note">Строгих ограничений по цветовой гамме нарядов нет — выбирайте оттенки на свой вкус. Просим лишь придерживаться нарядного стиля, соответствующего торжественному вечеру.</p>
 </section>
 
 <section class="rsvp container">
   <div class="center">
-    <div class="eyebrow">Подтверждение присутствия</div>
+    <div class="eyebrow pulse-title">Подтверждение присутствия</div>
     <h2 style="font-size:32px;">Пожалуйста, заполните форму до 5 августа</h2>
   </div>
   <form class="rsvp-form" id="rsvpForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfPLD0Gp2BUnkfBN5ohTWdZpxkzR4e7Pcynu2uItnDD3YXQog/formResponse" method="POST" target="hidden_iframe">
@@ -497,7 +501,7 @@
 </section>
 
 <section class="gifts container center">
-  <div class="eyebrow">Подарки</div>
+  <div class="eyebrow pulse-title">Подарки</div>
   <p class="gift-text">Самый ценный подарок для нас — ваше присутствие. Но если вы всё же хотите нас порадовать, будем благодарны вкладу в реализацию нашей мечты.</p>
 </section>
 
@@ -507,13 +511,9 @@
 </footer>
 
 <script>
-  // Scroll lock: page starts locked on the hero section. Scrolling only
-  // becomes possible after the visitor clicks the scroll button, which then
-  // smoothly glides the page down to the next section.
+  // Scroll button: smoothly glides the page down to the next section.
   const scrollBtn = document.getElementById('scrollBtn');
   scrollBtn.addEventListener('click', function(){
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
     document.querySelector('.welcome').scrollIntoView({behavior:'smooth', block:'start'});
   });
 
