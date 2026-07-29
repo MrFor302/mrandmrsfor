@@ -268,13 +268,15 @@
     resize:vertical;margin-bottom:14px;
   }
   .fallback-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-  .fallback-links a{
+  .fallback-links a,.fallback-links button{
     display:inline-block;padding:12px 20px;
     border:1px solid var(--accent);color:var(--accent);text-decoration:none;
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    background:none;font-family:'Montserrat',sans-serif;cursor:pointer;
     transition:background .25s ease,color .25s ease;
   }
-  .fallback-links a:hover{background:var(--accent);color:#fff;}
+  .fallback-links a:hover,.fallback-links button:hover{background:var(--accent);color:#fff;}
+  .fallback-links button.copied{background:var(--accent);color:#fff;}
 
   /* GIFTS */
   .gifts{padding-top:110px;}
@@ -515,6 +517,7 @@
     <p>Не получилось подтвердить автоматическую отправку. Пожалуйста, продублируйте ответ нам напрямую — ниже уже готов текст, его можно скопировать или отправить одной кнопкой:</p>
     <textarea id="rsvpFallbackText" readonly></textarea>
     <div class="fallback-links">
+      <button type="button" id="copyFallbackBtn">Скопировать текст</button>
       <a id="waLink" href="#" target="_blank" rel="noopener">Написать в WhatsApp</a>
       <a id="tgLink" href="https://t.me/Nisiforov" target="_blank" rel="noopener">Написать в Telegram</a>
     </div>
@@ -699,6 +702,34 @@
     document.getElementById('waLink').href =
       'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(summaryText);
     document.getElementById('tgLink').href = 'https://t.me/' + TELEGRAM_USERNAME;
+  }
+
+  const copyFallbackBtn = document.getElementById('copyFallbackBtn');
+  copyFallbackBtn.addEventListener('click', function(){
+    const text = document.getElementById('rsvpFallbackText').value;
+    const done = function(){
+      const original = 'Скопировать текст';
+      copyFallbackBtn.textContent = 'Скопировано!';
+      copyFallbackBtn.classList.add('copied');
+      setTimeout(function(){
+        copyFallbackBtn.textContent = original;
+        copyFallbackBtn.classList.remove('copied');
+      }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function(){
+        fallbackCopy(text, done);
+      });
+    } else {
+      fallbackCopy(text, done);
+    }
+  });
+
+  function fallbackCopy(text, done){
+    const ta = document.getElementById('rsvpFallbackText');
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
   }
 </script>
 
