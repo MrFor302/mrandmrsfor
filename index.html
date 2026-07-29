@@ -582,6 +582,35 @@
     }
     rsvpSubmitting = true;
     // form submits normally into the hidden iframe (no page navigation)
+
+    // Backup copy: independently email every RSVP straight to the couple,
+    // in parallel with the Google Forms submission above. This is a second,
+    // unrelated delivery channel (no shared account/token with Google), so if
+    // the Google Sheet/Form pipeline ever breaks again, responses still land
+    // in the inbox. Fire-and-forget: never blocks or affects the main flow.
+    try{
+      const nameVal = rsvpForm.querySelector('[name="entry.1882921191"]').value;
+      const attendingEl = rsvpForm.querySelector('[name="entry.462011520"]:checked');
+      const menuVal = rsvpForm.querySelector('[name="entry.1862161775"]').value;
+      const alcoholVals = Array.from(rsvpForm.querySelectorAll('[name="entry.1381933408"]:checked'))
+        .map(el => el.value).join(', ');
+      const carEl = rsvpForm.querySelector('[name="entry.2025803971"]:checked');
+
+      const backupData = new FormData();
+      backupData.append('_subject', 'RSVP: ' + nameVal);
+      backupData.append('_template', 'table');
+      backupData.append('Имя и фамилия', nameVal);
+      backupData.append('Придёт', attendingEl ? attendingEl.value : '');
+      backupData.append('Меню / аллергии', menuVal);
+      backupData.append('Алкоголь', alcoholVals + (otherVal ? (', ' + otherVal) : ''));
+      backupData.append('Автомобиль', carEl ? carEl.value : '');
+
+      fetch('https://formsubmit.co/ajax/mrfor302@gmail.com', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: backupData
+      }).catch(function(){ /* best-effort backup, ignore failures */ });
+    }catch(e){ /* never let the backup copy break the real submission */ }
   });
 
   hiddenFrame.addEventListener('load', function(){
