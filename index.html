@@ -659,6 +659,11 @@
     backupData.append('Алкоголь', fullAlcohol);
     backupData.append('Автомобиль', carEl ? carEl.value : '');
 
+    // Каждый канал: успех => resolve(true), любая неудача (ошибка сети, таймаут,
+    // явный отказ сервиса) => reject, чтобы Promise.any мог гонку выиграть только
+    // настоящим успехом. Таймаут увеличен до 12с — на части российских сетей
+    // соединения к некоторым внешним сервисам могут заметно тормозить.
+    const CHANNEL_TIMEOUT_MS = 12000;
     const timeout = ms => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
     const formSubmitCheck = Promise.race([
@@ -666,11 +671,12 @@
         method: 'POST',
         headers: { 'Accept': 'application/json' },
         body: backupData
-      }),
-      timeout(8000)
-    ])
-      .then(res => res.json().catch(() => ({})))
-      .then(data => data && data.success === 'true');
+      }).then(res => res.json().catch(() => ({}))),
+      timeout(CHANNEL_TIMEOUT_MS)
+    ]).then(data => {
+      if (data && data.success === 'true') return true;
+      throw new Error('formsubmit_failed');
+    });
 
     const tgText = 'Новая анкета RSVP:\n\n' + summaryText;
     const telegramCheck = Promise.race([
@@ -678,21 +684,26 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: TG_CHAT_ID, text: tgText })
-      }),
-      timeout(8000)
-    ])
-      .then(res => res.json().catch(() => ({})))
-      .then(data => data && data.ok === true);
+      }).then(res => res.json().catch(() => ({}))),
+      timeout(CHANNEL_TIMEOUT_MS)
+    ]).then(data => {
+      if (data && data.ok === true) return true;
+      throw new Error('telegram_failed');
+    });
 
-    Promise.allSettled([formSubmitCheck, telegramCheck]).then(results => {
-      const anySucceeded = results.some(r => r.status === 'fulfilled' && r.value === true);
-      if(anySucceeded){
+    // Как только ЛЮБОЙ канал реально подтвердит доставку — сразу показываем
+    // "Спасибо", не дожидаясь второго (важно: Telegram в РФ без VPN часто
+    // блокируется на уровне провайдера, и раньше мы ждали его полного тайм-аута
+    // даже если письмо уже ушло). Фолбэк показываем только если ОБА канала
+    // не смогли подтвердить доставку.
+    Promise.any([formSubmitCheck, telegramCheck])
+      .then(() => {
         rsvpForm.style.display = 'none';
         rsvpThanks.style.display = 'block';
-      } else {
+      })
+      .catch(() => {
         showFallback(summaryText);
-      }
-    });
+      });
   });
 
   function showFallback(summaryText){
