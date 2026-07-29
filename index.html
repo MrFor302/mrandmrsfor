@@ -582,16 +582,21 @@
     }
   });
 
-  // RSVP form -> submits to the Google Form's backend in the background (best effort,
-  // via hidden iframe, no page navigation) AND, independently, to FormSubmit.co by email.
-  // Google's own delivery has proven unreliable (silently drops responses sometimes),
-  // so FormSubmit's real-time JSON response is treated as the one source of truth for
-  // whether the guest sees "Спасибо" or a manual WhatsApp/Telegram fallback.
+  // RSVP form -> submits through THREE independent channels in parallel:
+  // 1) Google Forms (hidden iframe, best effort, no page navigation) — kept as-is,
+  //    but no longer trusted, since it has silently dropped real responses before.
+  // 2) FormSubmit.co — emails the couple directly.
+  // 3) A dedicated Telegram bot — messages the couple directly.
+  // The guest sees "Спасибо" as soon as EITHER channel 2 or channel 3 confirms
+  // delivery. Only if BOTH fail does the guest see the manual WhatsApp/Telegram
+  // fallback with a ready-made copy of their answer.
   const rsvpForm = document.getElementById('rsvpForm');
   const rsvpThanks = document.getElementById('rsvpThanks');
   const rsvpFallback = document.getElementById('rsvpFallback');
   const WHATSAPP_NUMBER = '79126276705';
   const TELEGRAM_USERNAME = 'Nisiforov';
+  const TG_BOT_TOKEN = '8975567987:AAHf9eaHSprgS7pqVF3NUHXHbnELTAs8nWY';
+  const TG_CHAT_ID = 209418409;
 
   rsvpForm.addEventListener('submit', function(e){
     e.preventDefault();
@@ -651,28 +656,40 @@
     backupData.append('Алкоголь', fullAlcohol);
     backupData.append('Автомобиль', carEl ? carEl.value : '');
 
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000));
+    const timeout = ms => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
-    Promise.race([
+    const formSubmitCheck = Promise.race([
       fetch('https://formsubmit.co/ajax/mrfor302@gmail.com', {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
         body: backupData
       }),
-      timeout
+      timeout(8000)
     ])
       .then(res => res.json().catch(() => ({})))
-      .then(data => {
-        if(data && data.success === 'true'){
-          rsvpForm.style.display = 'none';
-          rsvpThanks.style.display = 'block';
-        } else {
-          showFallback(summaryText);
-        }
-      })
-      .catch(() => {
+      .then(data => data && data.success === 'true');
+
+    const tgText = 'Новая анкета RSVP:\n\n' + summaryText;
+    const telegramCheck = Promise.race([
+      fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: tgText })
+      }),
+      timeout(8000)
+    ])
+      .then(res => res.json().catch(() => ({})))
+      .then(data => data && data.ok === true);
+
+    Promise.allSettled([formSubmitCheck, telegramCheck]).then(results => {
+      const anySucceeded = results.some(r => r.status === 'fulfilled' && r.value === true);
+      if(anySucceeded){
+        rsvpForm.style.display = 'none';
+        rsvpThanks.style.display = 'block';
+      } else {
         showFallback(summaryText);
-      });
+      }
+    });
   });
 
   function showFallback(summaryText){
