@@ -257,6 +257,24 @@
     display:none;text-align:center;margin-top:24px;color:var(--accent);
     font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;
   }
+  .rsvp-fallback{
+    display:none;margin-top:24px;padding:22px 24px;
+    border:1px solid var(--line);background:rgba(250,248,245,.6);text-align:center;
+  }
+  .rsvp-fallback p{font-size:14px;color:var(--ink);margin-bottom:14px;}
+  .rsvp-fallback textarea{
+    width:100%;min-height:110px;border:1px solid var(--line);background:#fff;
+    padding:10px;font-family:'Montserrat',sans-serif;font-size:13px;color:var(--ink);
+    resize:vertical;margin-bottom:14px;
+  }
+  .fallback-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .fallback-links a{
+    display:inline-block;padding:12px 20px;
+    border:1px solid var(--accent);color:var(--accent);text-decoration:none;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    transition:background .25s ease,color .25s ease;
+  }
+  .fallback-links a:hover{background:var(--accent);color:#fff;}
 
   /* GIFTS */
   .gifts{padding-top:110px;}
@@ -493,6 +511,14 @@
     <button type="submit" class="submit-btn">Отправить ответ</button>
   </form>
   <div class="rsvp-thanks" id="rsvpThanks">Спасибо! Ваш ответ получен ♡</div>
+  <div class="rsvp-fallback" id="rsvpFallback">
+    <p>Не получилось подтвердить автоматическую отправку. Пожалуйста, продублируйте ответ нам напрямую — ниже уже готов текст, его можно скопировать или отправить одной кнопкой:</p>
+    <textarea id="rsvpFallbackText" readonly></textarea>
+    <div class="fallback-links">
+      <a id="waLink" href="#" target="_blank" rel="noopener">Написать в WhatsApp</a>
+      <a id="tgLink" href="https://t.me/Nisiforov" target="_blank" rel="noopener">Написать в Telegram</a>
+    </div>
+  </div>
   <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </section>
 
@@ -556,13 +582,20 @@
     }
   });
 
-  // RSVP form -> submits directly to the Google Form's backend (same Google Sheet),
-  // styled to match the site instead of showing the default Google Forms UI.
+  // RSVP form -> submits to the Google Form's backend in the background (best effort,
+  // via hidden iframe, no page navigation) AND, independently, to FormSubmit.co by email.
+  // Google's own delivery has proven unreliable (silently drops responses sometimes),
+  // so FormSubmit's real-time JSON response is treated as the one source of truth for
+  // whether the guest sees "Спасибо" or a manual WhatsApp/Telegram fallback.
   const rsvpForm = document.getElementById('rsvpForm');
-  const hiddenFrame = document.getElementById('hidden_iframe');
-  let rsvpSubmitting = false;
+  const rsvpThanks = document.getElementById('rsvpThanks');
+  const rsvpFallback = document.getElementById('rsvpFallback');
+  const WHATSAPP_NUMBER = '79126276705';
+  const TELEGRAM_USERNAME = 'Nisiforov';
 
-  rsvpForm.addEventListener('submit', function(){
+  rsvpForm.addEventListener('submit', function(e){
+    e.preventDefault();
+
     const otherVal = document.getElementById('alcoholOther').value.trim();
     // clear any previously injected hidden fields (in case of resubmission)
     rsvpForm.querySelectorAll('.alcohol-other-hidden').forEach(el => el.remove());
@@ -580,46 +613,76 @@
       rsvpForm.appendChild(marker);
       rsvpForm.appendChild(response);
     }
-    rsvpSubmitting = true;
-    // form submits normally into the hidden iframe (no page navigation)
 
-    // Backup copy: independently email every RSVP straight to the couple,
-    // in parallel with the Google Forms submission above. This is a second,
-    // unrelated delivery channel (no shared account/token with Google), so if
-    // the Google Sheet/Form pipeline ever breaks again, responses still land
-    // in the inbox. Fire-and-forget: never blocks or affects the main flow.
-    try{
-      const nameVal = rsvpForm.querySelector('[name="entry.1882921191"]').value;
-      const attendingEl = rsvpForm.querySelector('[name="entry.462011520"]:checked');
-      const menuVal = rsvpForm.querySelector('[name="entry.1862161775"]').value;
-      const alcoholVals = Array.from(rsvpForm.querySelectorAll('[name="entry.1381933408"]:checked'))
-        .map(el => el.value).join(', ');
-      const carEl = rsvpForm.querySelector('[name="entry.2025803971"]:checked');
+    const nameVal = rsvpForm.querySelector('[name="entry.1882921191"]').value.trim();
+    const attendingEl = rsvpForm.querySelector('[name="entry.462011520"]:checked');
+    const menuVal = rsvpForm.querySelector('[name="entry.1862161775"]').value.trim();
+    const alcoholVals = Array.from(rsvpForm.querySelectorAll('[name="entry.1381933408"]:checked'))
+      .map(el => el.value).join(', ');
+    const carEl = rsvpForm.querySelector('[name="entry.2025803971"]:checked');
+    const fullAlcohol = alcoholVals + (otherVal ? (alcoholVals ? ', ' : '') + otherVal : '');
 
-      const backupData = new FormData();
-      backupData.append('_subject', 'RSVP: ' + nameVal);
-      backupData.append('_template', 'table');
-      backupData.append('Имя и фамилия', nameVal);
-      backupData.append('Придёт', attendingEl ? attendingEl.value : '');
-      backupData.append('Меню / аллергии', menuVal);
-      backupData.append('Алкоголь', alcoholVals + (otherVal ? (', ' + otherVal) : ''));
-      backupData.append('Автомобиль', carEl ? carEl.value : '');
+    const summaryLines = [
+      'RSVP — Натали и Андрей',
+      'Имя и фамилия: ' + nameVal,
+      'Придёт: ' + (attendingEl ? attendingEl.value : ''),
+      'Меню / аллергии: ' + (menuVal || '—'),
+      'Алкоголь: ' + (fullAlcohol || '—'),
+      'Автомобиль: ' + (carEl ? carEl.value : '—')
+    ];
+    const summaryText = summaryLines.join('\n');
 
+    // Best-effort attempt at the original Google Forms pipeline, submitted silently
+    // into the hidden iframe. Whatever happens here no longer drives the on-screen
+    // result — see comment above.
+    rsvpForm.target = 'hidden_iframe';
+    HTMLFormElement.prototype.submit.call(rsvpForm);
+
+    const submitBtn = rsvpForm.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка…';
+
+    const backupData = new FormData();
+    backupData.append('_subject', 'RSVP: ' + nameVal);
+    backupData.append('_template', 'table');
+    backupData.append('Имя и фамилия', nameVal);
+    backupData.append('Придёт', attendingEl ? attendingEl.value : '');
+    backupData.append('Меню / аллергии', menuVal);
+    backupData.append('Алкоголь', fullAlcohol);
+    backupData.append('Автомобиль', carEl ? carEl.value : '');
+
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000));
+
+    Promise.race([
       fetch('https://formsubmit.co/ajax/mrfor302@gmail.com', {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
         body: backupData
-      }).catch(function(){ /* best-effort backup, ignore failures */ });
-    }catch(e){ /* never let the backup copy break the real submission */ }
+      }),
+      timeout
+    ])
+      .then(res => res.json().catch(() => ({})))
+      .then(data => {
+        if(data && data.success === 'true'){
+          rsvpForm.style.display = 'none';
+          rsvpThanks.style.display = 'block';
+        } else {
+          showFallback(summaryText);
+        }
+      })
+      .catch(() => {
+        showFallback(summaryText);
+      });
   });
 
-  hiddenFrame.addEventListener('load', function(){
-    if(rsvpSubmitting){
-      rsvpForm.style.display = 'none';
-      document.getElementById('rsvpThanks').style.display = 'block';
-      rsvpSubmitting = false;
-    }
-  });
+  function showFallback(summaryText){
+    rsvpForm.style.display = 'none';
+    rsvpFallback.style.display = 'block';
+    document.getElementById('rsvpFallbackText').value = summaryText;
+    document.getElementById('waLink').href =
+      'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(summaryText);
+    document.getElementById('tgLink').href = 'https://t.me/' + TELEGRAM_USERNAME;
+  }
 </script>
 
 </body>
